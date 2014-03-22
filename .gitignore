@@ -1,0 +1,6 @@
+# latex ugly files
+*.log
+*.synctex.gz
+*.aux
+*.out
+
