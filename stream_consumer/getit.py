@@ -18,11 +18,12 @@ auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
 
 class MyStreamListener(tweepy.streaming.StreamListener):
-    def on_status(self, s):
-        print s
+    def on_status(self, d):
+        # put it in queue...
+        print d
 
     def on_exception(self, e):
         sys.stderr.write(str(e) + "\n")
 
 st = tweepy.streaming.Stream(auth, MyStreamListener())
-st.firehose()
+st.sample()
