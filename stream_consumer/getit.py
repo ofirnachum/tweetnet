@@ -6,24 +6,24 @@ import sys
 
 import tweepy
 
-consumer_key = os.environ['TWITTER_CONSUMER_KEY']
-consumer_secret = os.environ['TWITTER_CONSUMER_SECRET']
+from stream_listener import TweetnetStreamListener
 
-access_key = os.environ['TWITTER_ACCESS_KEY']
-access_secret = os.environ['TWITTER_ACCESS_SECRET']
+def authenticate():
+    try:
+        consumer_key = os.environ['TWITTER_CONSUMER_KEY']
+        consumer_secret = os.environ['TWITTER_CONSUMER_SECRET']
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_key, access_secret)
+        access_key = os.environ['TWITTER_ACCESS_KEY']
+        access_secret = os.environ['TWITTER_ACCESS_SECRET']
+    except KeyError as e:
+        print "You are missing an environment variable %r" % e.args[0]
+        print "get it."
+        sys.exit(1)
 
-api = tweepy.API(auth)
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_key, access_secret)
+    return auth
 
-class MyStreamListener(tweepy.streaming.StreamListener):
-    def on_status(self, d):
-        # put it in queue...
-        print d
-
-    def on_exception(self, e):
-        sys.stderr.write(str(e) + "\n")
-
-st = tweepy.streaming.Stream(auth, MyStreamListener())
+auth = authenticate()
+st = tweepy.streaming.Stream(auth, TweetnetStreamListener())
 st.sample()

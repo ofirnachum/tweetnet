@@ -8,3 +8,6 @@
 env
 
 .tweetnet
+
+# python jank
+*.pyc
