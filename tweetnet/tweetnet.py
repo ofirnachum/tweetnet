@@ -5,6 +5,9 @@ import requests
 
 from enforce_roles import restrict_to_roles
 
+# TEMPORARY
+from webapp.main import TWEETNET_DEV_DB
+
 class Tweetnet(object):
 
     # Different subclasses of this API class set different roles
@@ -25,7 +28,10 @@ class Tweetnet(object):
         round_id is the id of the round for this tweetnet.
         """
         self.round_id = round_id
-        pass
+
+        # TEMPORARY!!
+        import redis
+        self._r = redis.Redis(host='localhost', port=6379, db=TWEETNET_DEV_DB)
 
     @restrict_to_roles('bot')
     def submit_small_flag(self, flag_id, submitter_id):
@@ -39,7 +45,8 @@ class Tweetnet(object):
         """
         url = self.API_ROOT + "/flags/" + flag_id
         # TODO catch error?
-        requests.post(url, data={'submitter_id' : submitter_id})
+        r = requests.post(url, data={'submitter_id' : submitter_id})
+        return r.status_code == 201
 
     @restrict_to_roles('bot')
     def submit_large_flag(self, content, submitter_id):
@@ -50,7 +57,7 @@ class Tweetnet(object):
         """
         m = hashlib.md5()
         m.update(self.round_id + "||" + content)
-        self.submit_small_flag(m.hexdigest(), submitter_id)
+        return self.submit_small_flag(m.hexdigest(), submitter_id)
 
     @restrict_to_roles('benign', 'admin')
     def get_realistic_tweet(self):
@@ -92,6 +99,8 @@ class Tweetnet(object):
 
         raises RuntimeError if unable to
         """
+        # TEMPORARY
+        self._r.rpush('tweets', "%s:%s" % (username, tweet))
         print "%s tweets: %s" % (username, tweet)
 
     def get_user(self, username):
@@ -108,13 +117,15 @@ class Tweetnet(object):
         """
         returns all the Tweets related to this game
         """
-        pass
+        # TEMPORARY
+        return [t.split(':') for t in self._r.lrange("tweets", 0, -1)]
 
     def query_tweets(self, query):
         """
         returns tweets matching given query
         """
-        pass
+        # TEMPORARY
+        return [(user, tweet) for user, tweet in self.get_tweets() if query in tweet]
 
 
 # And now the subclasses

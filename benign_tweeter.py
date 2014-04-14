@@ -19,7 +19,7 @@ class BenignTweeter(object):
     def should_i_tweet(self):
         # TODO: some real kind of rando
         # for the distribution we want
-        return random.random() > .5
+        return random.random() > .05
 
     def run(self):
         try:
@@ -29,7 +29,7 @@ class BenignTweeter(object):
                     self.api.tweet(self.username, contents)
                 time.sleep(1)
         except KeyboardInterrupt:
-            pass
+            print "Benign User %s DYING" % self.username
 
 if __name__ == "__main__":
     import sys
