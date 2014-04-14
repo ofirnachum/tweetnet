@@ -90,10 +90,15 @@ class Tweetnet(object):
         """
         pass
 
-    @restrict_to_roles('admin')
     def get_tweets(self):
         """
         returns all the Tweets related to this game
+        """
+        pass
+
+    def query_tweets(self, query):
+        """
+        returns tweets matching given query
         """
         pass
 
