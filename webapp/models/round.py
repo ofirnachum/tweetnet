@@ -1,6 +1,6 @@
 
 from . import make_uuid
-from . import Flag
+from flag import Flag
 
 import hashlib
 

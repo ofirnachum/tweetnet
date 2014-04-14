@@ -50,6 +50,18 @@ def flag_detail(flag_id):
             return repr(flag)
         else:
             flask.abort(404)
+    else:
+        # it is a post
+        flag = d.get_flag(flag_id)
+        if not flag:
+            flask.abort(404)
+        else:
+            # they got it!
+            # so add it.
+            # TODO: worry about malformed? nahhh...
+            submitter_id = int(flask.request.form['submitter_id'])
+            flag.add_submission(submitter_id)
+            return flask.jsonify({'ok':True}),  201
 
 
 if __name__ == "__main__":

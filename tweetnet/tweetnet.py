@@ -1,3 +1,8 @@
+import hashlib
+import os
+
+import requests
+
 from enforce_roles import restrict_to_roles
 
 class Tweetnet(object):
@@ -13,30 +18,39 @@ class Tweetnet(object):
     # - admin: for set up
 
     ROLE = None
+    API_ROOT = os.environ.get('TWEETNET_API_SERVER', 'http://localhost:6857')
 
     def __init__(self, round_id, *args ,**kwargs):
         """
         round_id is the id of the round for this tweetnet.
         """
+        self.round_id = round_id
         pass
 
     @restrict_to_roles('bot')
-    def submit_small_flag(self, flag_id, aswhom):
+    def submit_small_flag(self, flag_id, submitter_id):
         """
         Submits a small flag
 
         raises RuntimeError if unable to
+
+        returns False if not a flag
+        returns True if a flag
         """
-        pass
+        url = self.API_ROOT + "/flags/" + flag_id
+        # TODO catch error?
+        requests.post(url, data={'submitter_id' : submitter_id})
 
     @restrict_to_roles('bot')
-    def submit_large_flag(self, content, aswhom):
+    def submit_large_flag(self, content, submitter_id):
         """
         submits a large flag
 
         raises RuntimeError if unable to
         """
-        pass
+        m = hashlib.md5()
+        m.update(self.round_id + "||" + content)
+        self.submit_small_flag(m.hexdigest(), submitter_id)
 
     @restrict_to_roles('benign', 'admin')
     def get_realistic_tweet(self):

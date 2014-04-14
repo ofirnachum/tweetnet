@@ -5,18 +5,20 @@ class Flag(object):
     @classmethod
     def from_json(cls, db, json_string):
         obj = json.loads(json_string)
-        return cls(
-            db,
-            obj['flag_id'],
-            obj['size'],
-            obj['contents'],
-        )
+        return cls(db, **obj)
 
     def __init__(self, db, flag_id, size, contents):
         self.db = db
         self.flag_id = flag_id
         self.size = size
         self.contents = contents
+
+    @property
+    def submissions(self):
+        return self.db.get_submissions_for_flag(self.flag_id)
+
+    def add_submission(self, submitter_id):
+        self.db.add_submission_for_flag(self.flag_id, submitter_id)
 
     def url(self):
         return "/flags/%s" % self.flag_id

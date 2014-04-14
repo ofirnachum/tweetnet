@@ -6,7 +6,7 @@
   <h3>Flags:</h3>
     <ol>
       {% for flag in round.flags %}
-      <li>{{ flag }} <a href="{{flag.url()}}">details</a></li>
+      <li>{{ flag }} {{ flag.submissions }} <a href="{{flag.url()}}">details</a></li>
       {% endfor %}
     </ol>
     <h4>Add:</h4>
