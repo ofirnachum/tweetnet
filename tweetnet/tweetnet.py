@@ -46,7 +46,7 @@ class Tweetnet(object):
 
         This returns a _string_, not a Tweet
         """
-        pass
+        return "#lol twitter is gr8 #shitpeoplesay"
 
     @restrict_to_roles('admin')
     def create_user(self, username):
@@ -78,7 +78,7 @@ class Tweetnet(object):
 
         raises RuntimeError if unable to
         """
-        pass
+        print "%s tweets: %s" % (username, tweet)
 
     def get_user(self, username):
         """

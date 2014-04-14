@@ -26,7 +26,7 @@ def restrict_to_roles(*roles):
                 ))
 
             # Otherwise we're good.
-            return f(*args, **kwargs)
+            return f(self, *args, **kwargs)
         return inner
 
     return decorator
