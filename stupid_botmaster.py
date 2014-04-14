@@ -11,4 +11,4 @@ if __name__ == "__main__":
 
     api = AdminTweetnet(round_id)
 
-    api.tweet(user, sys.argv[3])
+    api.tweet(user, "#wow %s" % sys.argv[3])
