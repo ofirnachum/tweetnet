@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<body>
+  <h1>Round {{ round.round_id }}</h1>
+
+  <h3>Flags:</h3>
+    <ol>
+      {% for flag in round.flags %}
+      <li>{{ flag }} <a href="{{flag.url()}}">details</a></li>
+      {% endfor %}
+    </ol>
+    <h4>Add:</h4>
+
+    <form action="{{round.flags_url()}}" method="POST">
+      <input type="radio" name="size" value="small">Small
+      <input type="radio" name="size" value="large">Large
+      <input type="text" name="contents" /><br>
+      <input type="submit">
+
+    </form>
+
+
+</body>
