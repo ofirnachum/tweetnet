@@ -12,9 +12,9 @@ class Round(object):
     def flags(self):
         return self.db.get_flags_for_round(self.round_id)
 
-    def add_flag(self, size, content):
+    def add_flag(self, size, contents):
         flag_id = make_uuid()
-        flag = Flag(self.db, flag_id, size, content)
+        flag = Flag(self.db, flag_id, size, contents)
         self.db.add_flag_for_round(self.round_id, flag)
 
     def url(self):

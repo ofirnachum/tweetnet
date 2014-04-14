@@ -9,14 +9,14 @@ class Flag(object):
             db,
             obj['flag_id'],
             obj['size'],
-            obj['content'],
+            obj['contents'],
         )
 
-    def __init__(self, db, flag_id, size, content):
+    def __init__(self, db, flag_id, size, contents):
         self.db = db
         self.flag_id = flag_id
         self.size = size
-        self.content = content
+        self.contents = contents
 
     def url(self):
         return "/flags/%s" % self.flag_id
@@ -25,7 +25,7 @@ class Flag(object):
         return {
             'flag_id':self.flag_id,
             'size':self.size,
-            'content':self.content,
+            'contents':self.contents,
         }
 
     def to_json(self):
