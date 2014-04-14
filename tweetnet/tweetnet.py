@@ -21,7 +21,7 @@ class Tweetnet(object):
         pass
 
     @restrict_to_roles('bot')
-    def submit_small_flag(self, flag_id):
+    def submit_small_flag(self, flag_id, aswhom):
         """
         Submits a small flag
 
@@ -30,7 +30,7 @@ class Tweetnet(object):
         pass
 
     @restrict_to_roles('bot')
-    def submit_large_flag(self, content):
+    def submit_large_flag(self, content, aswhom):
         """
         submits a large flag
 
