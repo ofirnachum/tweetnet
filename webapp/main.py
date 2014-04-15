@@ -10,7 +10,11 @@ from models import Database
 TWEETNET_DEV_DB = 7
 
 def db():
-    return Database(host='localhost', port=6379, db=TWEETNET_DEV_DB)
+    if os.environ.get('REDISTOGO_URL'):
+        return Database(url=os.environ['REDISTOGO_URL'])
+    else:
+        # Assume local
+        return Database(host='localhost', port=6379, db=TWEETNET_DEV_DB)
 
 @app.route("/")
 def index():

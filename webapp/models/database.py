@@ -8,7 +8,10 @@ from . import Flag
 class Database(object):
 
     def __init__(self, **kwargs):
-        self.r = redis.Redis(**kwargs)
+        if 'url' in kwargs:
+            self.r = redis.from_url(kwargs['url'])
+        else:
+            self.r = redis.Redis(**kwargs)
 
     def get_round(self, round_id):
         return Round(self, round_id)
