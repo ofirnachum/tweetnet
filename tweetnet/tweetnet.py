@@ -1,37 +1,29 @@
 import hashlib
 import os
 
-import requests
-
 from enforce_roles import restrict_to_roles
 
-# TEMPORARY
-from webapp.main import TWEETNET_DEV_DB
+class BaseTweetnet(object):
+    """
+    Different subclasses of this API class set different roles
+    this is to enforce our internal rules about which agents
+    are allowed to do what, yet still keep things in one class
+    An alternative would be to use mixins to create the subclasses.
+    
+    Currently there exist:
+    - bot: for the bot programs
+    - benign: for benign people
+    - admin: for set up
+    """
 
-class Tweetnet(object):
-
-    # Different subclasses of this API class set different roles
-    # this is to enforce our internal rules about which agents
-    # are allowed to do what, yet still keep things in one class
-    # An alternative would be to use mixins to create the subclasses.
-    #
-    # Currently there exist:
-    # - bot: for the bot programs
-    # - benign: for benign people
-    # - admin: for set up
-
-    ROLE = None
     API_ROOT = os.environ.get('TWEETNET_API_SERVER', 'http://localhost:6857')
 
-    def __init__(self, round_id, *args ,**kwargs):
+    def __init__(self, round_id, role, *args ,**kwargs):
         """
         round_id is the id of the round for this tweetnet.
         """
         self.round_id = round_id
-
-        # TEMPORARY!!
-        import redis
-        self._r = redis.Redis(host='localhost', port=6379, db=TWEETNET_DEV_DB)
+        self.role = role
 
     @restrict_to_roles('bot')
     def submit_small_flag(self, flag_id, submitter_id):
@@ -43,10 +35,7 @@ class Tweetnet(object):
         returns False if not a flag
         returns True if a flag
         """
-        url = self.API_ROOT + "/flags/" + flag_id
-        # TODO catch error?
-        r = requests.post(url, data={'submitter_id' : submitter_id})
-        return r.status_code == 201
+        return self._submit_small_flag(flag_id, submitter_id)
 
     @restrict_to_roles('bot')
     def submit_large_flag(self, content, submitter_id):
@@ -57,7 +46,7 @@ class Tweetnet(object):
         """
         m = hashlib.md5()
         m.update(self.round_id + "||" + content)
-        return self.submit_small_flag(m.hexdigest(), submitter_id)
+        return self._submit_small_flag(m.hexdigest(), submitter_id)
 
     @restrict_to_roles('benign', 'admin')
     def get_realistic_tweet(self):
@@ -67,7 +56,7 @@ class Tweetnet(object):
 
         This returns a _string_, not a Tweet
         """
-        return "#lol twitter is gr8 #shitpeoplesay"
+        return self._get_realistic_tweet()
 
     @restrict_to_roles('admin')
     def create_user(self, username):
@@ -78,7 +67,7 @@ class Tweetnet(object):
 
         raises RuntimeError if unable to
         """
-        pass
+        return self._create_user(username)
 
     @restrict_to_roles('admin')
     def add_follower(self, followed, follower):
@@ -89,7 +78,7 @@ class Tweetnet(object):
 
         raises RuntimeError if unable to
         """
-        pass
+        return self._add_follower(followed, follower)
 
     def tweet(self, username, tweet):
         """
@@ -99,41 +88,26 @@ class Tweetnet(object):
 
         raises RuntimeError if unable to
         """
-        # TEMPORARY
-        self._r.rpush('tweets', "%s:%s" % (username, tweet))
-        print "%s tweets: %s" % (username, tweet)
+        return self._tweet(username, tweet)
 
     def get_user(self, username):
         """
         returns User object with given username
          - followers
          - tweets
-        
+
         raises RuntimeError if unable to
         """
-        pass
+        return self._get_user(self, username)
 
     def get_tweets(self):
         """
         returns all the Tweets related to this game
         """
-        # TEMPORARY
-        return [t.split(':') for t in self._r.lrange("tweets", 0, -1)]
+        return self._get_tweets()
 
     def query_tweets(self, query):
         """
         returns tweets matching given query
         """
-        # TEMPORARY
-        return [(user, tweet) for user, tweet in self.get_tweets() if query in tweet]
-
-
-# And now the subclasses
-class AdminTweetnet(Tweetnet):
-    ROLE = 'admin'
-
-class BotTweetnet(Tweetnet):
-    ROLE = 'bot'
-
-class BenignTweetnet(Tweetnet):
-    ROLE = 'benign'
+        return self._query_tweets(query)

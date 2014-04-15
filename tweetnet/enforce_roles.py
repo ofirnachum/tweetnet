@@ -1,7 +1,7 @@
 import functools
 
 # make this configurable
-ROLE_ATTRIBUTE = 'ROLE'
+ROLE_ATTRIBUTE = 'role'
 
 def restrict_to_roles(*roles):
     """

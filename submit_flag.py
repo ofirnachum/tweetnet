@@ -4,12 +4,12 @@ submits a flag
 SHOULD NOT be used except for testing. so exits at the end.
 
 """
-from tweetnet import BotTweetnet
+from tweetnet import Tweetnet
 
 import sys
 
 round_id = sys.argv[1]
-api = BotTweetnet(round_id)
+api = Tweetnet(round_id, role='bot')
 
 if sys.argv[2] == '-f':
     flag_source = sys.argv[3]

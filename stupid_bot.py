@@ -1,7 +1,7 @@
 import sys
 import time
 
-from tweetnet import BotTweetnet
+from tweetnet import Tweetnet
 
 # Dumb example bot.
 
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     round_id = sys.argv[1]
     bot_id = sys.argv[2]
 
-    api = BotTweetnet(round_id)
+    api = Tweetnet(round_id, role='bot')
 
     submitted = set()
     while True:

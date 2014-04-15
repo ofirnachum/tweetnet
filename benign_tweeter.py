@@ -4,7 +4,7 @@ A benign user.
 import random
 import time
 
-from tweetnet import BenignTweetnet
+from tweetnet import Tweetnet
 
 class BenignTweeter(object):
 
@@ -14,7 +14,7 @@ class BenignTweeter(object):
         probability distribution of tweets
         """
         self.username = username
-        self.api = BenignTweetnet(round_id)
+        self.api = Tweetnet(round_id, role='benign')
 
     def should_i_tweet(self):
         # TODO: some real kind of rando
