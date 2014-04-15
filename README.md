@@ -23,7 +23,7 @@ Infrastructure prototype
  4. Start the webapp on port 6857: `python webapp/main.py`.
  5. In another terminal window, run `python round_runner.py 1 stupid_bot.py` to start 10 benign users and 10 infected
     computers in round 1.
- 6. Go to `localhost:6857/rounds/1` and create a small flag (leave the text box empty). Grab its flag_id. for example,
+ 6. Go to `localhost:6857/round/1` and create a small flag (leave the text box empty). Grab its flag_id. for example,
     let's say it is `4699ae56b13e47e5af2d91958dace6bd`.
  7. In _another_ terminal window, run `python stupid_botmaster.py 1 botmaster 4699ae56b13e47e5af2d91958dace6bd`
     (substituting in your flag id).
