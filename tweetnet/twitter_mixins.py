@@ -16,6 +16,9 @@ class BaseTwitterMixin(object):
     def _tweet(self, username, tweet):
         raise NotImplementedError
 
+    def _get_all_users(self):
+        raise NotImplementedError
+
     def _get_user(self, username):
         raise NotImplementedError
 
