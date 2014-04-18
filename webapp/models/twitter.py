@@ -37,10 +37,10 @@ class Twitter(object):
         return tweet
 
     def url(self):
-        return "/round/%s/twitter" % self.round_id
+        return "/round/%s" % self.round_id
 
     def users_url(self):
-        return self.url() + "/users"
+        return self.url() + "/twitter/users"
 
     def tweets_url(self):
-        return self.url() + "/tweets"
+        return self.url() + "/twitter/tweets"
