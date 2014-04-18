@@ -1,6 +1,6 @@
 import os
 import json
-
+import tweepy
 import flask
 app = flask.Flask(__name__)
 app.debug = True
@@ -144,6 +144,22 @@ def tweet_list(round_id):
             return flask.redirect(flask.request.args['redirect_to'])
         else:
             return flask.jsonify(tweet.as_dict())
+
+@app.route("/sample")
+def sample_tweet():
+    api_key = 'bpzbu8YIoh7lZ4jUBTX1PsIdv'
+    api_secret = 'Mb407I4DPvvwejzMun8t3X9u19e52bFiDpdM7aUUbhWDpTj77N'
+
+    access_token = '2444646246-HejodGZWNtrB8kRFH36VDUWdEmvwQSewpEjqFeE'
+    access_token_secret = 'f0JKkRjEUoDdOpZB3g0rEs2SOlUy4A2uLLcRMcVYeXw1V'
+
+    auth = tweepy.OAuthHandler(api_key, api_secret)
+    auth.set_access_token(access_token, access_token_secret)
+
+    twapi = tweepy.API(auth)
+    query = 'poop'  # lol poop
+    text = twapi.search(q=query, rpp=1)[0].text
+    return flask.jsonify({'text': text})
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 6857))
