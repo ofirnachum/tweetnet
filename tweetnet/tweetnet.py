@@ -104,7 +104,7 @@ class BaseTweetnet(object):
 
         raises RuntimeError if unable to
         """
-        return self._get_user(self, username)
+        return self._get_user(username)
 
     def get_tweets(self):
         """

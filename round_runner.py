@@ -6,12 +6,18 @@ import random
 import subprocess
 import os
 
+from tweetnet import Tweetnet
+
 def main():
     usernames = ['tweetnet%02d' % i for i in range(10)]
     random.shuffle(usernames)
 
     round_id = sys.argv[1]
     print "Round: %s" % round_id
+
+    api = Tweetnet(round_id, 'admin')
+    for user in usernames:
+        api.create_user(user)
 
     subs = []
 

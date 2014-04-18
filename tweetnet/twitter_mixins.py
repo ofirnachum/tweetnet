@@ -1,6 +1,8 @@
 """
 Different Mixins for twitter functionality
 """
+import requests
+
 from tweetnet import BaseTweetnet
 
 class BaseTwitterMixin(object):
@@ -27,6 +29,54 @@ class BaseTwitterMixin(object):
 
     def _query_tweets(self, query):
         raise NotImplementedError
+
+
+class MockTwitterMixin(BaseTwitterMixin):
+    """
+    calls out to the api
+    """
+
+    def _twitter_url(self):
+        return self.API_ROOT + ("/round/%s/twitter" % self.round_id)
+
+    def _create_user(self, username):
+        url = self._twitter_url() + "/users"
+        r = requests.post(url, {'username': username})
+        r.raise_for_status()
+        return r.json()
+
+    def _add_follower(self, followed, follower):
+        url = self._twitter_url() + ("/users/%s/followers" % followed)
+        r = requests.post(url, {'username': follower})
+        r.raise_for_status()
+        return r.json()
+
+    def _tweet(self, username, content):
+        url = self._twitter_url() + "/tweets"
+        r = requests.post(url, {'username':username, 'content':content})
+        r.raise_for_status()
+        return r.json()
+
+    def _get_all_users(self):
+        url = self._twitter_url() + "/users"
+        r = requests.get(url)
+        r.raise_for_status()
+        return r.json()['usernames']
+
+    def _get_user(self, username):
+        url = self._twitter_url() + ("/users/%s" % username)
+        r = requests.get(url)
+        r.raise_for_status()
+        return r.json()
+
+    def _get_tweets(self):
+        url = self._twitter_url() + "/tweets"
+        r = requests.get(url)
+        r.raise_for_status()
+        return r.json()['tweets']
+
+    def _query_tweets(self, query):
+        return [tweet for tweet in self.get_tweets() if query in tweet['content']]
 
 
 class JankyTwitterMixin(BaseTwitterMixin):

@@ -8,6 +8,6 @@ from realistic_mixins import *
 from submission_mixins import *
 
 
-class Tweetnet(JankyTwitterMixin, ConstantRealisticMixin, WebappSubmissionMixin, BaseTweetnet):
+class Tweetnet(MockTwitterMixin, ConstantRealisticMixin, WebappSubmissionMixin, BaseTweetnet):
     pass
 

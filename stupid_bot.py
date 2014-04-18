@@ -14,8 +14,8 @@ if __name__ == "__main__":
     submitted = set()
     while True:
         wows = api.query_tweets('#wow')
-        for _, tweet in wows:
-            _, flag = tweet.split(' ')
+        for tweet in wows:
+            _, flag = tweet['content'].split(' ')
             if not flag in submitted:
                 r = api.submit_small_flag(flag, bot_id)
                 print r, flag

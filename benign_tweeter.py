@@ -19,13 +19,14 @@ class BenignTweeter(object):
     def should_i_tweet(self):
         # TODO: some real kind of rando
         # for the distribution we want
-        return random.random() > .05
+        return random.random() < .05
 
     def run(self):
         try:
             while True:
                 if self.should_i_tweet():
                     contents = self.api.get_realistic_tweet()
+                    print "Benign user %s tweeting: %s" % (self.username, contents)
                     self.api.tweet(self.username, contents)
                 time.sleep(1)
         except KeyboardInterrupt:

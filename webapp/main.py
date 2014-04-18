@@ -82,7 +82,7 @@ def user_list(round_id):
         })
     else: # POST
         user = twitter.create_user(flask.request.form['username'])
-        if flask.request.args['redirect_to']:
+        if flask.request.args.get('redirect_to'):
             return flask.redirect(flask.request.args['redirect_to'])
         else:
             return flask.jsonify(user.as_dict())
@@ -116,7 +116,7 @@ def add_follower(round_id, username):
 
     u.add_follower(follower)
 
-    if flask.request.args['redirect_to']:
+    if flask.request.args.get('redirect_to'):
         return flask.redirect(flask.request.args['redirect_to'])
     else:
         return flask.jsonify(u.as_dict())
@@ -140,7 +140,7 @@ def tweet_list(round_id):
         if twitter.get_user(tweeter) is None:
             flask.abort(404, "User %s not found" % tweeter)
         tweet = twitter.add_tweet(tweeter, flask.request.form['content'])
-        if flask.request.args['redirect_to']:
+        if flask.request.args.get('redirect_to'):
             return flask.redirect(flask.request.args['redirect_to'])
         else:
             return flask.jsonify(tweet.as_dict())
