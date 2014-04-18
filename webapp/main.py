@@ -33,6 +33,11 @@ def round_flags(round_id):
 
     if flask.request.method == 'GET':
         flags = round.flags
+        since = flask.request.args.get('since')
+        if since is not None:
+            since = int(since)
+            flags = [f for f in flags if f.created_at >= since]
+
         return flask.jsonify({
             'count': len(flags),
             'flags': [flag.as_dict() for flag in flags],

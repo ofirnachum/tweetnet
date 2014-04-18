@@ -1,3 +1,4 @@
+import time
 
 from . import make_uuid
 
@@ -31,7 +32,7 @@ class Round(object):
         else:
             flag_id = md5hash(self.round_id + "||" + contents)
 
-        flag = Flag(self.db, flag_id, size, contents)
+        flag = Flag(self.db, flag_id, size, contents, int(time.time()))
         self.db.add_flag_for_round(self.round_id, flag)
 
     @property

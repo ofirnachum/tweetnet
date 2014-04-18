@@ -48,6 +48,14 @@ class BaseTweetnet(object):
         m.update(self.round_id + "||" + content)
         return self._submit_small_flag(m.hexdigest(), submitter_id)
 
+    @restrict_to_roles('admin')
+    def get_flags(self, since=None):
+        """
+        Gets flags. Since argument will
+        filter to after timestamp given.
+        """
+        return self._get_flags(since)
+
     @restrict_to_roles('benign', 'admin')
     def get_realistic_tweet(self):
         """

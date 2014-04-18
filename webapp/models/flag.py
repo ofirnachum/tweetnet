@@ -7,11 +7,12 @@ class Flag(object):
         obj = json.loads(json_string)
         return cls(db, **obj)
 
-    def __init__(self, db, flag_id, size, contents):
+    def __init__(self, db, flag_id, size, contents, created_at):
         self.db = db
         self.flag_id = flag_id
         self.size = size
         self.contents = contents
+        self.created_at = created_at
 
     @property
     def submissions(self):
@@ -28,6 +29,7 @@ class Flag(object):
             'flag_id':self.flag_id,
             'size':self.size,
             'contents':self.contents,
+            'created_at':self.created_at,
         }
 
     def to_json(self):
