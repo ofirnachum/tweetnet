@@ -21,12 +21,10 @@ Infrastructure prototype
  3. WARNING this will clean out a local redis database, so don't do it if you care about stuff in your redis without
     changing the `TWEETNET_DEV_DB` variable in webapp/main.py. BUT then run: `python webapp/clear_db.py`.
  4. Start the webapp on port 6857: `python webapp/main.py`.
- 5. In another terminal window, run `python round_runner.py 1 stupid_bot.py` to start 10 benign users and 10 infected
-    computers in round 1.
- 6. Go to `localhost:6857/round/1` and create a small flag (leave the text box empty). Grab its flag_id. for example,
-    let's say it is `4699ae56b13e47e5af2d91958dace6bd`.
- 7. In _another_ terminal window, run `python stupid_botmaster.py 1 botmaster 4699ae56b13e47e5af2d91958dace6bd`
-    (substituting in your flag id).
- 8. Shortly, the bots will see this tweet, and submit the flag. Yippee! (reload /round/1 and the bot ids will appear)
+ 5. In another terminal window, run `python round_runner.py 1 stupid_bot.py stupid_botmaster.py` to start 10 benign users and 10 infected
+    computers and 1 botmaster.
+ 6. Go to `localhost:6857/round/1` and create a small flag
+ 7. watch the stupid botmaster submit it to the bots and the bots submit it!
+
 
 ### EMBRACE THE JANK

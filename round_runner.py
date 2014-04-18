@@ -19,6 +19,10 @@ def main():
     for user in usernames:
         api.create_user(user)
 
+    botmaster = usernames.pop()
+
+    print "Botmaster: %s" % botmaster
+
     subs = []
 
     try:
@@ -35,6 +39,13 @@ def main():
             subs.append(subprocess.Popen(
                 ["/usr/bin/env", "python", botscript, round_id, str(i)],
             ))
+
+        # launch botmaster
+        botmasterscript = sys.argv[3]
+        print "starting botmaster with handle %s" % botmaster
+        subs.append(subprocess.Popen(
+            ["/usr/bin/env", "python", botmasterscript, round_id, botmaster]
+        ))
 
     except:
         for p in subs:
