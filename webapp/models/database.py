@@ -4,6 +4,7 @@ source of models
 import redis
 from . import Round
 from . import Flag
+from . import Tweet
 
 class Database(object):
 
@@ -37,3 +38,36 @@ class Database(object):
 
     def add_submission_for_flag(self, flag_id, submitter_id):
         self.r.sadd("flags:%s:submissions" % flag_id, submitter_id)
+
+
+    def get_usernames_for_round(self, round_id):
+        return self.r.smembers("round:%s:twitter:usernames" % round_id)
+
+    def add_username_to_round(self, round_id, username):
+        self.r.sadd("round:%s:twitter:usernames" % round_id, username)
+
+    def is_username_in_round(self, round_id, username):
+        return self.r.sismember("round:%s:twitter:usernames" % round_id, username)
+
+    def get_tweets_for_round(self, round_id):
+        tweet_strings = self.r.lrange("round:%s:twitter:tweets" % round_id, 0, -1)
+        return [Tweet.from_json(self, s) for s in tweet_strings]
+
+    def add_tweet_to_round(self, round_id, tweet):
+        tweet_json = tweet.to_json()
+        self.r.rpush("round:%s:twitter:tweets" % round_id, tweet_json)
+
+
+    def add_follower_for_user_and_round(self, username, round_id, follower):
+        return self.r.sadd("round:%s:twitter:users:%s:followers" % (round_id, username), follower)
+
+    def get_followers_for_user_and_round(self, username, round_id):
+        return self.r.smembers("round:%s:twitter:users:%s:followers" % (round_id, username))
+
+    def add_tweet_for_user_and_round(self, username, round_id, tweet):
+        tweet_json = tweet.to_json()
+        self.r.rpush("round:%s:twitter:users:%s:tweets" % (round_id, username), tweet_json)
+
+    def get_tweets_for_user_and_round(self, username, round_id):
+        tweet_strings = self.r.lrange("round:%s:twitter:users:%s:tweets" % (round_id, username), 0, -1)
+        return [Tweet.from_json(self, s) for s in tweet_strings]

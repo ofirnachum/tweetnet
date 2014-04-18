@@ -90,6 +90,12 @@ class BaseTweetnet(object):
         """
         return self._tweet(username, tweet)
 
+    def get_all_users(self):
+        """
+        returns all the users
+        """
+        return self._get_all_users()
+
     def get_user(self, username):
         """
         returns User object with given username

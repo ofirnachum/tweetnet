@@ -1,23 +1,145 @@
 <!DOCTYPE html>
 
+<head>
+  <style type="text/css">
+
+  body {
+    font-family:sans-serif;
+  }
+
+  .section {
+    float:left;
+    margin:10px;
+    border-style:dotted;
+    border-color:black;
+    border-width:1px;
+    padding:10px;
+  }
+
+  .flag_id {
+    font-family:monospace;
+    font-size:10px;
+  }
+
+  td {
+    padding:3px;
+  }
+
+  td.flag-status {
+    height:12px;
+    width:12px;
+  }
+
+  td.flag-status.submitted-yes {
+    background-color:green;
+  }
+
+  td.flag-status.submitted-no {
+    background-color:red;
+  }
+
+  </style>
+</head>
+
 <body>
   <h1>Round {{ round.round_id }}</h1>
 
-  <h3>Flags:</h3>
-    <ol>
-      {% for flag in round.flags %}
-      <li>{{ flag }} {{ flag.submissions }} <a href="{{flag.url()}}">details</a></li>
-      {% endfor %}
-    </ol>
+  <div id="flags" class="section">
+    <h3>Flags:</h3>
+      <table>
+        <thead>
+          <tr>
+            <td>
+              id
+            </td>
+            <td>
+              type
+            </td>
+            <td>
+            </td>
+            {% for i in round.bot_ids %}
+              <td>
+                {{ i }}
+              </td>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for flag in round.flags %}
+            <tr>
+              <td class="flag_id">
+                {{flag.flag_id}}
+              </td>
+              <td>
+                {{flag.size}}
+              </td>
+              <td>
+                <a href="{{flag.url()}}">details</a>
+              </td>
+              {% for i in round.bot_ids %}
+                <td class="flag-status submitted-{{ 'yes' if i in flag.submissions else 'no' }}">
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     <h4>Add:</h4>
 
     <form action="{{round.flags_url()}}" method="POST">
-      <input type="radio" name="size" value="small">Small
-      <input type="radio" name="size" value="large">Large
-      <input type="text" name="contents" /><br>
-      <input type="submit">
-
+      <input type="hidden" name="size" value="small">
+      <input type="hidden" name="contents" value="">
+      <input type="submit" value="add small flag">
     </form>
+
+    <form action="{{round.flags_url()}}" method="POST">
+      <input type="hidden" name="size" value="large">
+      <input type="submit" value="add large flag">
+      <input type="text" name="contents" placeholder="contents" />
+    </form>
+
+  </div>
+
+  <div class="section" id="tweets">
+    <h3>Tweets</h3>
+    <form action="{{twitter.tweets_url()}}?redirect_to={{twitter.url()}}" method="POST">
+      Send tweet:
+      <input name="username" type="text" placeholder="username" />
+      <input name="content" type="text" placeholder="content" />
+      <input type="submit" />
+    </form>
+
+    <ul>
+    {% for tweet in twitter.tweets|reverse %}
+      <li>{{tweet.username}} at {{tweet.timestamp}}: {{tweet.content}}</li>
+    {% endfor %}
+    </ul>
+
+  </div>
+
+  <div class="section" id="users">
+    <h3>Users</h3>
+
+    <form action="{{twitter.users_url()}}?redirect_to={{twitter.url()}}" method="POST">
+      Add user:
+      <input name="username" type="text" placeholder="username" />
+      <input type="submit" />
+    </form>
+
+    <ul>
+      {% for username in twitter.usernames %}
+        <li>
+          {{ username }}
+          <a href="{{twitter.users_url()}}/{{username}}">details</a>
+          <form action="{{twitter.users_url()}}/{{username}}/followers?redirect_to={{twitter.users_url()}}/{{username}}" method="POST">
+            <input name="username" type="text" placeholder="add follower" />
+            <input type="submit" />
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+
+  </div>
 
 
 </body>
