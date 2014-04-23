@@ -28,3 +28,9 @@ Infrastructure prototype
 
 
 ### EMBRACE THE JANK
+
+FOR OFIR:
+python ../../virtualenv-1.9/virtualenv.py env
+source env/bin/activate
+pip install -r requirements.txt
+
