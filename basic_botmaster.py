@@ -15,6 +15,37 @@ def get_random_tweet(api):
         return tweets[int(random.random() * len(tweets))];
     return "";
 
+def get_random_short_tweet(api, max_len):
+    """
+    returns random tweet of at most max_len length from all tweets
+    """
+    tweets = api.get_tweets();
+    if (tweets):
+        tweet = tweets[int(random.random() * len(tweets))];
+        while (len(tweet['content']) > max_len):
+            tweet = tweets[int(random.random() * len(tweets))];
+        return tweet;
+    return "";
+
+def tweet_flag_component(api, comp):
+    random_content = get_random_short_tweet(api, 138)['content'].strip();
+    tweet_content = random_content + utils.to_punctuation(comp) + ' ';
+    api.tweet(user, tweet_content);
+
+def tweet_flag(api, flag):
+    # Signal beginning of flag
+    random_content = get_random_short_tweet(api, 138)['content'];
+    api.tweet(user, random_content + "  ");  
+    # Tweet flag in chunks of base-4 digits
+    for xy in flag['flag_id']:
+        n = int(xy, 16);
+        x = n // 4;
+        y = n % 4;
+        tweet_flag_component(api, x);
+        time.sleep(1);
+        tweet_flag_component(api, y);
+        time.sleep(1);
+
 if __name__ == "__main__":
     round_id = sys.argv[1]
     user = sys.argv[2]
@@ -38,15 +69,6 @@ if __name__ == "__main__":
             api.tweet(user, random_tweet['content'].strip());
         if flags:
             for flag in flags:
-                # When flag appears, botmaster
-                # dumps content at URL with specific
-                # key.  This key is communicated to 
-                # bots via Twitter.
-                random_content = " "*200;
-                while (len(random_content) >= 140):
-                    random_content = get_random_tweet(api)['content'];
-                num_spaces = random_content.count(' ');
-                payload = {'name': 'master', 'key': str(num_spaces + 1), 'val': flag['flag_id']};
-                r = requests.get("http://ofir.scripts.mit.edu/botnet.php", params=payload)
-                api.tweet(user, random_content + ' ');
+                tweet_flag(api, flag);
+                time.sleep(10);
         time.sleep(3)

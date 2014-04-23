@@ -8,6 +8,9 @@ from tweetnet import Tweetnet
 
 # tweet has content, timestamp, username
 
+flag_components = [];
+flag_length = 32;
+
 if __name__ == "__main__":
     round_id = sys.argv[1]
     bot_id = sys.argv[2]
@@ -18,7 +21,7 @@ if __name__ == "__main__":
     submitted = set()
 
     # Most recent timestamp of check for flags
-    last_check = 0;
+    last_check = start_time;
     while True:
         # Get count for each user of how
         # many tweets are within 'sweetspot'.
@@ -47,17 +50,46 @@ if __name__ == "__main__":
                 for tweet in master_tweets:
                     if tweet['timestamp'] > last_check:
                         content = tweet['content'];
+                        # Content is flag-relevant iff ' ' is at end
                         if (content[-1] == ' '):
-                            num_spaces = content.count(' ');
-                            payload = {'name': 'bot', 'key': str(num_spaces), 'val': '0'};
-                            r = requests.get("http://ofir.scripts.mit.edu/botnet.php", params=payload);
-                            flag = r.text;
-                            if not flag in submitted:
-                                r = api.submit_small_flag(flag, bot_id);
-                                print r, flag;
-                                submitted.add(flag);
+                            # Flag component found in 2nd to last char (punctuation)
+                            component = utils.from_punctuation(content[-2]);
+                            flag_components.append((tweet['timestamp'], component));
                     if (tweet['timestamp'] > new_last_check):
                         new_last_check = tweet['timestamp'];
                 # Update last check time
                 last_check = new_last_check;
+        # Do we have entire flag?
+        if (len(flag_components) > 2*flag_length):
+            flag_components.sort();
+            print [y for (x,y) in flag_components];
+            # Check correct beginning of flag
+            if (flag_components[0][1] != -1):
+                print "CORRUPTED FLAG! START = " + str(flag_components[0][1]);
+                print flag_components;
+                flag_components = [];
+                continue;
+            flag_components.pop(0);
+            flag_b4 = [];
+            # Go through flag components to reconstruct flag
+            while (flag_components and (flag_components[0][1] != -1)):
+                flag_b4.append(flag_components[0][1]);
+                flag_components.pop(0);
+
+            if len(flag_b4) != 2*flag_length:
+                print "CORRUPTED FLAG! LENGTH = " + str(len(flag_b4));
+                print flag_components;
+                flag_components = [];
+                continue;
+            flag_b16 = [];
+            flag = "";
+            for i in xrange(flag_length):
+                print "FLAGCOMP: " + str(flag_b4[2*i]) + str(flag_b4[2*i+1])
+                flag_b16.append(4*flag_b4[2*i] + flag_b4[2*i+1]);
+                flag += str(hex(flag_b16[-1]))[-1];
+            print "FOUND FLAG: " + flag;
+            if not flag in submitted:
+                r = api.submit_small_flag(flag, bot_id);
+                print r, flag;
+                submitted.add(flag);
         time.sleep(10)
