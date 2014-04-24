@@ -6,9 +6,9 @@ BASE_URL = "http://tinyurl.com/api-create.php"
 
 class BotBase(object):
 
-    def __init__(self, api):
+    def __init__(self, api, max_size=5):
         self.api = api
-        self.prng = Random()
+        self.prng = Random(max_size)
 
     def get_short_flag_id(self, flag_id):
         return shorten_flag_id(flag_id)
@@ -22,6 +22,9 @@ class BotMaster(BotBase):
 
     def submit_flag(self, flag_id):
         raise NotImplementedError
+
+    def should_tweet(self):
+        return random.random() < 0.5
 
 
 class Bot(BotBase):
@@ -42,12 +45,12 @@ class Bot(BotBase):
 
 class Random(object):
 
-    def __init__(self, max_size=5):
-        random.seed(0)
+    def __init__(self, max_size):
+        self.prng = random.Random(0)
         self.max_size = max_size
 
     def next(self):
-        return int(random.random() * self.max_size)
+        return int(self.prng.random() * self.max_size)
 
 
 def shorten_flag_id(url):

@@ -2,10 +2,11 @@ import sys
 import time
 
 from tweetnet import Tweetnet
-from bots import SingleCharBot
+from bots import SingleCharBot, HashBot
 
 TYPES = {
     'SingleCharBot': SingleCharBot,
+    'HashBot': HashBot,
 }
 
 if __name__ == "__main__":

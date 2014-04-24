@@ -6,7 +6,7 @@ from common import Bot
 class SingleCharBot(Bot):
 
     def __init__(self, flag_size=32):
-        self.flag_size = 32
+        self.flag_size = flag_size
 
     def consume_flag(self):
         rand_num = self.prng.next()
@@ -17,7 +17,7 @@ class SingleCharBot(Bot):
             for tweet in tweets:
                 if count != 0:
                     count -= 1
-                    time.sleep(3)
+                    time.sleep(1)
                     continue  # ignore tweets
                 flag += self.extract_char(rand_num, tweet)
                 rand_num = self.prng.next()
@@ -30,10 +30,11 @@ class SingleCharBot(Bot):
         index = rand_num % len(content)
         return content[index]
 
+
 class HashBot(Bot):
 
     def __init__(self, flag_size=32):
-        self.flag_size = 32
+        self.flag_size = flag_size
 
     def consume_flag(self):
         rand_num = self.prng.next()

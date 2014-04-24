@@ -5,10 +5,11 @@ import sys
 import time
 
 from tweetnet import Tweetnet
-from botmaster import SingleCharBotMaster
+from botmaster import SingleCharBotMaster, HashBotMaster
 
 TYPES = {
     'SingleCharBotMaster': SingleCharBotMaster,
+    'HashBotMaster': HashBotMaster,
 }
 
 if __name__ == "__main__":
