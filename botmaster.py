@@ -1,4 +1,4 @@
-from common import BotMaster
+from common import BotMaster, shorten_flag_id
 
 
 class SingleCharBotMaster(BotMaster):

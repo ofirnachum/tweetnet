@@ -1,4 +1,7 @@
 import random
+import requests
+
+BASE_URL = "http://tinyurl.com/api-create.php"
 
 
 class BotBase(object):
@@ -6,6 +9,9 @@ class BotBase(object):
     def __init__(self, api):
         self.api = api
         self.prng = Random()
+
+    def get_short_flag_id(self, flag_id):
+        return shorten_flag_id(flag_id)
 
 
 class BotMaster(BotBase):
@@ -42,3 +48,11 @@ class Random(object):
 
     def next(self):
         return int(random.random() * self.max_size)
+
+
+def shorten_flag_id(url):
+
+    r = requests.get(BASE_URL, params={
+        'url': url,
+    })
+    return r.text.split("/")[-1]
