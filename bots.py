@@ -5,7 +5,8 @@ from common import Bot
 
 class SingleCharBot(Bot):
 
-    def __init__(self, flag_size=32):
+    def __init__(self, bot_id, api, flag_size=32):
+        super(SingleCharBot, self).__init__(bot_id, api)
         self.flag_size = flag_size
 
     def consume_flag(self):
@@ -33,7 +34,8 @@ class SingleCharBot(Bot):
 
 class HashBot(Bot):
 
-    def __init__(self, flag_size=32):
+    def __init__(self, bot_id, api, flag_size=32):
+        super(HashBot, self).__init__(bot_id, api)
         self.flag_size = flag_size
 
     def consume_flag(self):

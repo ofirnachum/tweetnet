@@ -8,7 +8,7 @@ import subprocess
 from tweetnet import Tweetnet
 
 
-def main(botmaster_type, bot_type):
+def main(bot_type, botmaster_type):
     usernames = ['tweetnet%02d' % i for i in range(10)]
     random.shuffle(usernames)
 
@@ -38,7 +38,7 @@ def main(botmaster_type, bot_type):
         for i in range(10):
             print "starting bot %d" % i
             subs.append(subprocess.Popen(
-                ["/usr/bin/env", "python", botscript, round_id, str(i)],
+                ["/usr/bin/env", "python", botscript, round_id, str(i), bot_type],
             ))
 
         # launch botmaster
@@ -60,6 +60,6 @@ def main(botmaster_type, bot_type):
 
 
 if __name__ == "__main__":
-    botmaster_type = sys.argv[1]
-    bot_type = sys.argv[2]
-    main(botmaster_type, bot_type)
+    bot_type = sys.argv[4]
+    botmaster_type = sys.argv[5]
+    main(bot_type, botmaster_type)

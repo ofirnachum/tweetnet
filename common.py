@@ -17,7 +17,7 @@ class BotBase(object):
 class BotMaster(BotBase):
 
     def __init__(self, user, api):
-        super(api)
+        super(BotMaster, self).__init__(api)
         self.user = user
 
     def submit_flag(self, flag_id):
@@ -30,7 +30,7 @@ class BotMaster(BotBase):
 class Bot(BotBase):
 
     def __init__(self, bot_id, api):
-        super(api)
+        super(Bot, self).__init__(api)
         self.bot_id = bot_id
 
     def submit_small_flag(self, flag):
