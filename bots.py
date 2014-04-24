@@ -30,7 +30,7 @@ class SingleCharBot(Bot):
     def extract_char(self, rand_num, tweet):
         content = tweet['content']
         index = rand_num % len(content)
-        return content[index]
+        return "".join(content[index])
 
 
 class HashBot(Bot):

@@ -11,4 +11,4 @@ env
 
 # python jank
 *.pyc
-dumb.rdb
+*.rdb
