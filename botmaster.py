@@ -22,16 +22,17 @@ class SingleCharBotMaster(BotMaster):
                 count = rand_num
                 tweet = self.insert_char(rand_num,
                                          flag_id[sent_char], tweet)
+                print "Master::: char: %s, el: %s, tweeting: %s" %\
+                    (flag_id[sent_char], sent_char, tweet)
                 sent_char += 1
 
             self.api.tweet(self.user, tweet)
 
     def insert_char(self, rand_num, char, tweet):
-        content = list(tweet['content'])
+        content = list(tweet)
         index = rand_num % len(content)
         content[index] = char  # replace w/char
-        tweet['content'] = content
-        return tweet
+        return content
 
 
 class HashBotMaster(BotMaster):

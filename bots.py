@@ -21,6 +21,7 @@ class SingleCharBot(Bot):
                     time.sleep(1)
                     continue  # ignore tweets
                 flag += self.extract_char(rand_num, tweet)
+                print "Bot::: flag: %s" % flag
                 rand_num = self.prng.next()
                 count = rand_num
 
