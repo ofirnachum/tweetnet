@@ -26,7 +26,3 @@ if __name__ == "__main__":
 
         time.sleep(3)
 
-def hash(tweet):
-    m = md5()
-    m.update(tweet)
-    return m.hexdigest()[-4:]
