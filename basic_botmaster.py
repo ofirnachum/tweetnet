@@ -10,22 +10,17 @@ def get_random_tweet(api):
     """
     returns random tweet from all tweets
     """
-    tweets = api.get_tweets();
-    if (tweets):
-        return tweets[int(random.random() * len(tweets))];
-    return "";
+    tweet = api.get_realistic_tweet();
+    return tweet;
 
 def get_random_short_tweet(api, max_len):
     """
     returns random tweet of at most max_len length from all tweets
     """
-    tweets = api.get_tweets();
-    if (tweets):
-        tweet = tweets[int(random.random() * len(tweets))];
-        while (len(tweet['content']) > max_len):
-            tweet = tweets[int(random.random() * len(tweets))];
-        return tweet;
-    return "";
+    tweet = api.get_realistic_tweet();
+    while (len(tweet['content']) > max_len):
+        tweet = api.get_realistic_tweet();
+    return tweet;
 
 def tweet_flag_component(api, comp):
     random_content = get_random_short_tweet(api, 138)['content'].strip();
