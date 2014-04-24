@@ -14,10 +14,10 @@ TYPES = {
 if __name__ == "__main__":
     round_id = sys.argv[1]
     user = sys.argv[2]
-    master_type = sys.argv[3]
+    botmaster_type = sys.argv[3]
     api = Tweetnet(round_id, role='admin')
 
-    master = TYPES[master_type](user, api)
+    master = TYPES[botmaster_type](user, api)
 
     last_check = 0
 
