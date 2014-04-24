@@ -18,18 +18,18 @@ def get_random_short_tweet(api, max_len):
     returns random tweet of at most max_len length from all tweets
     """
     tweet = api.get_realistic_tweet();
-    while (len(tweet['content']) > max_len):
+    while (len(tweet) > max_len):
         tweet = api.get_realistic_tweet();
     return tweet;
 
 def tweet_flag_component(api, comp):
-    random_content = get_random_short_tweet(api, 138)['content'].strip();
+    random_content = get_random_short_tweet(api, 138).strip();
     tweet_content = random_content + utils.to_punctuation(comp) + ' ';
     api.tweet(user, tweet_content);
 
 def tweet_flag(api, flag):
     # Signal beginning of flag
-    random_content = get_random_short_tweet(api, 138)['content'];
+    random_content = get_random_short_tweet(api, 138);
     api.tweet(user, random_content + "  ");  
     # Tweet flag in chunks of base-4 digits
     for xy in flag['flag_id']:
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         # determine validity of master.
         if utils.sweet_spot(last_check):
             random_tweet = get_random_tweet(api);
-            api.tweet(user, random_tweet['content'].strip());
+            api.tweet(user, random_tweet.strip());
         if flags:
             for flag in flags:
                 tweet_flag(api, flag);
