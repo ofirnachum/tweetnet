@@ -4,11 +4,11 @@ runs a round (prototype)
 import sys
 import random
 import subprocess
-import os
 
 from tweetnet import Tweetnet
 
-def main():
+
+def main(botmaster_type, bot_type):
     usernames = ['tweetnet%02d' % i for i in range(10)]
     random.shuffle(usernames)
 
@@ -29,7 +29,8 @@ def main():
         for username in usernames:
             print "starting benign user %s" % username
             subs.append(subprocess.Popen(
-                ["/usr/bin/env", "python","benign_tweeter.py", round_id, username],
+                ["/usr/bin/env", "python",
+                    "benign_tweeter.py", round_id, username, bot_type],
             ))
 
         # launch our bots
@@ -44,7 +45,8 @@ def main():
         botmasterscript = sys.argv[3]
         print "starting botmaster with handle %s" % botmaster
         subs.append(subprocess.Popen(
-            ["/usr/bin/env", "python", botmasterscript, round_id, botmaster]
+            ["/usr/bin/env", "python", botmasterscript,
+                round_id, botmaster, botmaster_type]
         ))
 
     except:
@@ -57,6 +59,7 @@ def main():
         p.wait()
 
 
-
 if __name__ == "__main__":
-    main()
+    botmaster_type = sys.argv[1]
+    bot_type = sys.argv[2]
+    main(botmaster_type, bot_type)

@@ -1,15 +1,4 @@
-from common import Random
-
-
-class BotMaster(object):
-
-    def __init__(self, user, api):
-        self.user = user
-        self.api = api
-        self.prng = Random()
-
-    def submit_flag(self, flag_id):
-        raise NotImplementedError
+from common import BotMaster
 
 
 class SingleCharBotMaster(BotMaster):
