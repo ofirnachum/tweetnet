@@ -32,7 +32,7 @@ class SingleCharBotMaster(BotMaster):
         content = list(tweet)
         index = rand_num % len(content)
         content[index] = char  # replace w/char
-        return content
+        return "".join(content)
 
 
 class HashBotMaster(BotMaster):
