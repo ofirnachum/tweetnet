@@ -27,7 +27,7 @@ class SingleCharBot(Bot):
                 tweet = tweets[count]
                 flag += self.extract_char(num, tweet)
                 print "Bot::: flag %s" % flag
-            # time.sleep(60)
+            time.sleep(60)
             oldIndex += count + 1
             self.submit_small_flag(flag)
 
