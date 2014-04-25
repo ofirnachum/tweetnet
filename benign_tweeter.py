@@ -6,6 +6,7 @@ import time
 
 from tweetnet import Tweetnet
 
+
 class BenignTweeter(object):
 
     def __init__(self, round_id, username):
@@ -26,7 +27,8 @@ class BenignTweeter(object):
             while True:
                 if self.should_i_tweet():
                     contents = self.api.get_realistic_tweet()
-                    print "Benign user %s tweeting: %s" % (self.username, contents)
+                    # print "Benign user %s tweeting: %s" % (self.username,
+                    # contents)
                     self.api.tweet(self.username, contents)
                 time.sleep(1)
         except KeyboardInterrupt:

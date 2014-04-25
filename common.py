@@ -29,15 +29,17 @@ class BotMaster(BotBase):
 
 class Bot(BotBase):
 
-    def __init__(self, bot_id, api):
+    def __init__(self, bot_id, api, botmaster):
         super(Bot, self).__init__(api)
         self.bot_id = bot_id
+        self.botmaster = botmaster
 
     def submit_small_flag(self, flag):
         return self.api.submit_small_flag(flag, self.bot_id)
 
     def get_master_tweets(self):
-        return self.api.query_tweets("TODO")
+        tweets = self.api.get_user(self.botmaster)['tweets']
+        return [tweet['content'] for tweet in tweets]
 
     def consume_flag(self):
         raise NotImplementedError
