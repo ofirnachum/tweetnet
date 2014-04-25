@@ -71,3 +71,9 @@ class Database(object):
     def get_tweets_for_user_and_round(self, username, round_id):
         tweet_strings = self.r.lrange("round:%s:twitter:users:%s:tweets" % (round_id, username), 0, -1)
         return [Tweet.from_json(self, s) for s in tweet_strings]
+
+    def get_sample_tweet(self):
+        return self.r.lpop("sampletweets")
+
+    def add_sample_tweet(self, text):
+        return self.r.rpush("sampletweets", text)
