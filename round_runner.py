@@ -35,7 +35,7 @@ def main(bot_type, botmaster_type):
 
         # launch our bots
         botscript = sys.argv[2]
-        for i in range(1):
+        for i in range(10):
             print "starting bot %d" % i
             subs.append(subprocess.Popen(
                 ["/usr/bin/env", "python", botscript, round_id, str(i), bot_type, botmaster],
