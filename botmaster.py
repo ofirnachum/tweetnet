@@ -10,10 +10,10 @@ class SingleCharBotMaster(BotMaster):
         rand_num = self.prng.next()
         count = rand_num
         while sent_char < len(flag_id):
-            print "MASTER::: rand: %d, count: %d" % (rand_num, count)
             time.sleep(1)
             if not self.should_tweet():
                 continue
+            print "MASTER::: rand: %d, count: %d" % (rand_num, count)
 
             tweet = self.api.get_realistic_tweet()
             if count > 0:
@@ -24,16 +24,15 @@ class SingleCharBotMaster(BotMaster):
                 rand_num = self.prng.next()
                 count = rand_num
                 sent_char += 1
-
             self.api.tweet(self.user, tweet)
 
     def insert_char(self, rand_num, char, tweet):
         content = list(tweet)
         index = rand_num % len(content)
         content[index] = char
-        content =  "".join(content)
+        content = "".join(content)
         print "Master::: char: %s, index: %s, tweeting: %s" %\
-                    (char, index, content)
+            (char, index, content)
         return content
 
 

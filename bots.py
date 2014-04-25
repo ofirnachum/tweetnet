@@ -10,20 +10,26 @@ class SingleCharBot(Bot):
         self.flag_size = flag_size
 
     def consume_flag(self):
-        nums = [self.prng.next() for x in range(self.flag_size)]
-        num_tweets = sum(nums)
-        tweets = self.get_master_tweets()
-        while len(tweets) < num_tweets:
-            time.sleep(10)
-            tweets = self.get_master_tweets()
+        oldIndex = 0
+        while True:
+            nums = [self.prng.next() for x in range(self.flag_size)]
+            num_tweets = sum(nums) + self.flag_size - 1
+            tweets = self.get_master_tweets()[oldIndex:]
+            while len(tweets) < num_tweets:
+                time.sleep(10)
+                print "Bot::: waiting. found %d tweets, need %d tweets" % (len(tweets), num_tweets)
+                tweets = self.get_master_tweets()[oldIndex:]
 
-        flag = ""
-        for num in nums:
-            tweet = tweets[num]
-
-            flag += self.extract_char(num, tweet)
-
-        self.submit_small_flag(flag)
+            flag = ""
+            count = -1
+            for num in nums:
+                count += num + 1
+                tweet = tweets[count]
+                flag += self.extract_char(num, tweet)
+                print "Bot::: flag %s" % flag
+            # time.sleep(60)
+            oldIndex += count + 1
+            self.submit_small_flag(flag)
 
     def extract_char(self, rand_num, tweet):
         index = rand_num % len(tweet)
