@@ -1,4 +1,5 @@
 import os
+import os.path
 import json
 import tweepy
 import flask
@@ -6,6 +7,12 @@ app = flask.Flask(__name__)
 app.debug = True
 
 from models import Database
+
+# Fuck it. Stick dir up from here into path.
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
+
+import stream_consumer
 
 TWEETNET_DEV_DB = 7
 
@@ -152,6 +159,8 @@ def tweet_list(round_id):
 
 @app.route("/sample")
 def sample_tweet():
+    d = db()
+
     # Get text from a tweet from real twitter
     api_key = 'bpzbu8YIoh7lZ4jUBTX1PsIdv'
     api_secret = 'Mb407I4DPvvwejzMun8t3X9u19e52bFiDpdM7aUUbhWDpTj77N'  # Horrible exposed secrets
@@ -159,13 +168,14 @@ def sample_tweet():
     access_token = '2444646246-HejodGZWNtrB8kRFH36VDUWdEmvwQSewpEjqFeE'
     access_token_secret = 'f0JKkRjEUoDdOpZB3g0rEs2SOlUy4A2uLLcRMcVYeXw1V'
 
-    auth = tweepy.OAuthHandler(api_key, api_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    twapi = tweepy.API(auth)
-    
-    query = 'poop'  # lol poop (adjust to taste)
-    text = twapi.search(q=query, rpp=1)[0].text  # rpp is results per page
-    return flask.jsonify({'text': text})
+    tweet = d.get_sample_tweet()
+    while tweet is None:
+        # Fill her up
+        for t in stream_consumer.getn(150, api_key, api_secret, access_token, access_token_secret):
+            d.add_sample_tweet(t.text)
+        tweet = d.get_sample_tweet()
+
+    return flask.jsonify({'text': tweet})
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 6857))
