@@ -31,8 +31,8 @@ def main(round_id, bot_type,
         for username in usernames:
             print "Starting benign user %s" % username
             subs.append(subprocess.Popen(
-                get_popen_args(get_beign_args(round_id,
-                                              username))
+                get_beign_args(round_id,
+                               username)
             ))
 
         # launch our bots
@@ -40,18 +40,18 @@ def main(round_id, bot_type,
         for i in range(num_bots):
             print "Starting bot %d" % i
             subs.append(subprocess.Popen(
-                get_popen_args(get_bot_args(round_id,
-                                            str(i),
-                                            bot_type,
-                                            botmaster)),
+                get_bot_args(round_id,
+                             i,
+                             bot_type,
+                             botmaster),
             ))
 
         # launch botmaster
         print "starting botmaster with handle %s" % botmaster
         subs.append(subprocess.Popen(
-            get_popen_args(get_master_args(round_id,
-                                           botmaster,
-                    bot_type))
+            get_master_args(round_id,
+                            botmaster,
+                    bot_type)
         ))
 
     except:

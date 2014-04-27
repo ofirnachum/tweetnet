@@ -1,3 +1,4 @@
+import sys
 import argparse
 
 from tweetnet import get_api_type
@@ -12,22 +13,26 @@ DEFAULT = "default"
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--round_id")
+    parser.add_argument("--round-id")
     parser.add_argument("--bot-id")
     parser.add_argument("--bot-type")
     parser.add_argument("--username")
     parser.add_argument("--run-type",
                         choices=(BENIGN, BOT, MASTER))
-    parser.add_argument("--dev", choices=(DEV, DEFAULT))
+    parser.add_argument("--dev", action="store_true", default=False)
     args = parser.parse_args()
+
+    api_type = DEFAULT
+    if args.dev:
+        api_type = DEV
 
     bot = None
 
-    api_obj = get_api_type(args.dev)
+    api_obj = get_api_type(api_type)
     api = api_obj(args.round_id, role=args.run_type)
 
     is_master = args.run_type == MASTER
-    bot_obj = get_bot_type(args.bot_type, run_type)
+    bot_obj = get_bot_type(args.bot_type, args.run_type)
 
     if args.run_type == BENIGN:
         bot = bot_obj(args.username, api)
@@ -39,8 +44,8 @@ if __name__ == "__main__":
     if bot is None:
         raise Exception("Invalid type! %s" % args.run_type)
 
-    if args.run_type == BENIGN and args.dev == DEV:
+    if args.run_type == BENIGN and args.dev:
         # don't run benign!
-        return
+        sys.exit(1)
 
     bot.run()
