@@ -1,7 +1,7 @@
-import sys
 import time
 
 from common import Bot
+
 
 class StupidBot(Bot):
 
@@ -19,9 +19,9 @@ class StupidBot(Bot):
         for tweet in wows:
             self.submit_wow_tweet(tweet)
 
-    def submit_wow_tweet(tweet):
+    def submit_wow_tweet(self, tweet):
         _, flag = tweet['content'].split(' ')
         if not flag in self.already_submitted:
-            r = self.api.submit_small_flag(flag, bot_id)
+            r = self.api.submit_small_flag(flag, self.bot_id)
             print r, flag
             self.already_submitted.add(flag)

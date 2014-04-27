@@ -2,12 +2,7 @@ import sys
 import time
 
 from tweetnet import Tweetnet
-from bots import SingleCharBot, HashBot
-
-TYPES = {
-    'SingleCharBot': SingleCharBot,
-    'HashBot': HashBot,
-}
+from bots.common import get_bot_type
 
 if __name__ == "__main__":
     round_id = sys.argv[1]
@@ -16,6 +11,7 @@ if __name__ == "__main__":
     botmaster = sys.argv[4]
 
     api = Tweetnet(round_id, role='bot')
-    bot = TYPES[bot_type](bot_id, api, botmaster)
+    bot_obj = get_bot_type(bot_type)
+    bot = bot_obj(bot_id, api, botmaster)
 
     bot.run()

@@ -9,7 +9,7 @@ from tweetnet import Tweetnet
 PY_PATH = "/usr/bin/env"
 
 
-def main(round_id, bot_type, botmaster_type,
+def main(round_id, bot_type,
          num_bots=10, num_tweeters=10):
     print "Round: %s" % round_id
 
@@ -39,15 +39,15 @@ def main(round_id, bot_type, botmaster_type,
         for i in range(num_bots):
             print "Starting bot %d" % i
             subs.append(subprocess.Popen(
-                get_popen_args(*[round_id,
+                get_popen_args(*["bot_runner.py", round_id,
                                  str(i), bot_type, botmaster]),
             ))
 
         # launch botmaster
         print "starting botmaster with handle %s" % botmaster
         subs.append(subprocess.Popen(
-            get_popen_args(*[round_id,
-                             botmaster_type, botmaster])
+            get_popen_args(*["botmaster_runner.py", round_id,
+                    botmaster, bot_type])
         ))
 
     except:
@@ -61,15 +61,16 @@ def main(round_id, bot_type, botmaster_type,
 
 
 def get_popen_args(*args):
-    return [PY_PATH, "python"] + args
+    base_args = [PY_PATH, "python"]
+    base_args.extend(args)
+    return base_args
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--round_id", help="set the round_id")
-    parser.add_argument("-b", "--bot_type", help="set the type of bot")
-    parser.add_argument(
-        "-m", "--botmaster_type", help="set the type of bot master")
+    parser.add_argument("-b", "--bot_type",
+                        help="set the type of bot/master pair")
     args = parser.parse_args()
-    main(args.round_id, args.bot_type, args.botmaster_type)
+    main(args.round_id, args.bot_type)

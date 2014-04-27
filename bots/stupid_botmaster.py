@@ -1,10 +1,10 @@
 """
 example of a stupid botmaster
 """
-import sys
 import time
 
 from common import BotMaster
+
 
 class StupidBotMaster(BotMaster):
 

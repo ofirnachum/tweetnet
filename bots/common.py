@@ -12,6 +12,7 @@ class BotMaster(object):
     def should_tweet(self):
         # TODO: replace
         # with optional tweet queue?
+        # way to replicate benign
         return random.random() < 0.5
 
     def get_new_flags(self):
@@ -59,3 +60,10 @@ def shorten_flag_id(url):
         'url': url,
     })
     return r.text.split("/")[-1]
+
+
+def get_bot_type(flag, is_master=False):
+    bot, master = bots.TYPES[flag]
+    if is_master:
+        return master
+    return bot
