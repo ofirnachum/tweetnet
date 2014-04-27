@@ -1,5 +1,6 @@
 import random
 import requests
+import time
 
 class BotMaster(object):
 
@@ -16,7 +17,7 @@ class BotMaster(object):
         return random.random() < 0.5
 
     def get_new_flags(self):
-        flags = api.get_flags(since=self._last_flag_check)
+        flags = self.api.get_flags(since=self._last_flag_check)
         self._last_flag_check = int(time.time()) - 1
         return [f['flag_id'] for f in flags]
 
@@ -60,10 +61,3 @@ def shorten_flag_id(url):
         'url': url,
     })
     return r.text.split("/")[-1]
-
-
-def get_bot_type(flag, is_master=False):
-    bot, master = bots.TYPES[flag]
-    if is_master:
-        return master
-    return bot

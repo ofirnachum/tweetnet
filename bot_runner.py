@@ -1,8 +1,7 @@
 import sys
-import time
 
 from tweetnet import Tweetnet
-from bots.common import get_bot_type
+from bots import get_bot_type
 
 if __name__ == "__main__":
     round_id = sys.argv[1]
