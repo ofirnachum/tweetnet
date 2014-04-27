@@ -27,10 +27,10 @@ if __name__ == "__main__":
     api = api_obj(args.round_id, role=args.run_type)
 
     is_master = args.run_type == MASTER
-    bot_obj = get_bot_type(args.bot_type, is_master=is_master)
+    bot_obj = get_bot_type(args.bot_type, run_type)
 
     if args.run_type == BENIGN:
-        bot = bot_obj(args.round_id, args.username)
+        bot = bot_obj(args.username, api)
     elif args.run_type == BOT:
         bot = bot_obj(args.bot_id, api, args.username)
     elif args.run_type == MASTER:
