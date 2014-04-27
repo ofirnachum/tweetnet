@@ -18,6 +18,4 @@ if __name__ == "__main__":
     api = Tweetnet(round_id, role='bot')
     bot = TYPES[bot_type](bot_id, api, botmaster)
 
-    while True:
-        bot.consume_flag()
-        time.sleep(3)
+    bot.run()

@@ -1,47 +1,45 @@
 import random
 import requests
 
-BASE_URL = "http://tinyurl.com/api-create.php"
-
-
-class BotBase(object):
-
-    def __init__(self, api, max_size=5):
-        self.api = api
-        self.prng = Random(max_size)
-
-    def get_short_flag_id(self, flag_id):
-        return shorten_flag_id(flag_id)
-
-
-class BotMaster(BotBase):
+class BotMaster(object):
 
     def __init__(self, user, api):
-        super(BotMaster, self).__init__(api)
         self.user = user
+        self.api = api
 
-    def submit_flag(self, flag_id):
-        raise NotImplementedError
+        self._last_flag_check = 0
 
     def should_tweet(self):
+        # TODO: replace
+        # with optional tweet queue?
         return random.random() < 0.5
 
+    def get_new_flags(self):
+        flags = api.get_flags(since=self._last_flag_check)
+        self._last_flag_check = int(time.time()) - 1
+        return [f['flag_id'] for f in flags]
 
-class Bot(BotBase):
+    def run(self):
+        raise NotImplementedError
+
+
+class Bot(object):
 
     def __init__(self, bot_id, api, botmaster):
-        super(Bot, self).__init__(api)
         self.bot_id = bot_id
+        self.api = api
         self.botmaster = botmaster
 
     def submit_small_flag(self, flag):
         return self.api.submit_small_flag(flag, self.bot_id)
 
     def get_master_tweets(self):
+        # TODO: do we really want the bot knowing
+        # who the master is right away?
         tweets = self.api.get_user(self.botmaster)['tweets']
         return [tweet['content'] for tweet in tweets]
 
-    def consume_flag(self):
+    def run(self):
         raise NotImplementedError
 
 
