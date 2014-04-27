@@ -1,6 +1,7 @@
 """
 Mixins for getting realistic tweets
 """
+import requests
 
 class BaseRealisticMixin(object):
 
