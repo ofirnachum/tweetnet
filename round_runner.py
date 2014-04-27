@@ -7,6 +7,7 @@ import subprocess
 from tweetnet import Tweetnet
 
 PY_PATH = "/usr/bin/env"
+BOT_RUNNER = "bot_runner.py"
 
 
 def main(round_id, bot_type,
@@ -30,8 +31,8 @@ def main(round_id, bot_type,
         for username in usernames:
             print "Starting benign user %s" % username
             subs.append(subprocess.Popen(
-                get_popen_args(*["benign_tweeter.py",
-                                 round_id, username])
+                get_popen_args(get_beign_args(round_id,
+                                              username))
             ))
 
         # launch our bots
@@ -39,15 +40,18 @@ def main(round_id, bot_type,
         for i in range(num_bots):
             print "Starting bot %d" % i
             subs.append(subprocess.Popen(
-                get_popen_args(*["bot_runner.py", round_id,
-                                 str(i), bot_type, botmaster]),
+                get_popen_args(get_bot_args(round_id,
+                                            str(i),
+                                            bot_type,
+                                            botmaster)),
             ))
 
         # launch botmaster
         print "starting botmaster with handle %s" % botmaster
         subs.append(subprocess.Popen(
-            get_popen_args(*["botmaster_runner.py", round_id,
-                    botmaster, bot_type])
+            get_popen_args(get_master_args(round_id,
+                                           botmaster,
+                    bot_type))
         ))
 
     except:
@@ -60,8 +64,20 @@ def main(round_id, bot_type,
         p.wait()
 
 
+def get_beign_args(round_id, username):
+    return get_popen_args(*[round_id, username, "benign"])
+
+
+def get_bot_args(round_id, i, bot_type, botmaster):
+    return get_popen_args(*[round_id, str(i), bot_type, "bot"])
+
+
+def get_master_args(round_id, username, bot_type):
+    return get_popen_args(*[round_id, username, bot_type, "master"])
+
+
 def get_popen_args(*args):
-    base_args = [PY_PATH, "python"]
+    base_args = [PY_PATH, "python", BOT_RUNNER]
     base_args.extend(args)
     return base_args
 
