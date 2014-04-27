@@ -41,7 +41,7 @@ def main(round_id, bot_type,
             print "Starting bot %d" % i
             subs.append(subprocess.Popen(
                 get_popen_args(get_bot_args(round_id,
-                                            str(i),
+                                            i,
                                             bot_type,
                                             botmaster)),
             ))
