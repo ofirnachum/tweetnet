@@ -1,19 +1,20 @@
 """
 runs a round (prototype)
 """
-import sys
 import random
 import subprocess
 
 from tweetnet import Tweetnet
 
+PY_PATH = "/usr/bin/env"
 
-def main(bot_type, botmaster_type):
-    usernames = ['tweetnet%02d' % i for i in range(10)]
-    random.shuffle(usernames)
 
-    round_id = sys.argv[1]
+def main(round_id, bot_type, botmaster_type,
+         num_bots=10, num_tweeters=10):
     print "Round: %s" % round_id
+
+    usernames = ['tweetnet%02d' % i for i in range(num_tweeters)]
+    random.shuffle(usernames)
 
     api = Tweetnet(round_id, 'admin')
     for user in usernames:
@@ -27,26 +28,26 @@ def main(bot_type, botmaster_type):
 
     try:
         for username in usernames:
-            print "starting benign user %s" % username
+            print "Starting benign user %s" % username
             subs.append(subprocess.Popen(
-                ["/usr/bin/env", "python",
-                    "benign_tweeter.py", round_id, username, bot_type],
+                get_popen_args(*["benign_tweeter.py",
+                                 round_id, username])
             ))
 
         # launch our bots
-        botscript = sys.argv[2]
-        for i in range(10):
-            print "starting bot %d" % i
+
+        for i in range(num_bots):
+            print "Starting bot %d" % i
             subs.append(subprocess.Popen(
-                ["/usr/bin/env", "python", botscript, round_id, str(i), bot_type, botmaster],
+                get_popen_args(*[round_id,
+                                 str(i), bot_type, botmaster]),
             ))
 
         # launch botmaster
-        botmasterscript = sys.argv[3]
         print "starting botmaster with handle %s" % botmaster
         subs.append(subprocess.Popen(
-            ["/usr/bin/env", "python", botmasterscript,
-                round_id, botmaster, botmaster_type]
+            get_popen_args(*[round_id,
+                             botmaster_type, botmaster])
         ))
 
     except:
@@ -59,7 +60,16 @@ def main(bot_type, botmaster_type):
         p.wait()
 
 
+def get_popen_args(*args):
+    return [PY_PATH, "python"] + args
+
+
 if __name__ == "__main__":
-    bot_type = sys.argv[4]
-    botmaster_type = sys.argv[5]
-    main(bot_type, botmaster_type)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-r", "--round_id", help="set the round_id")
+    parser.add_argument("-b", "--bot_type", help="set the type of bot")
+    parser.add_argument(
+        "-m", "--botmaster_type", help="set the type of bot master")
+    args = parser.parse_args()
+    main(args.round_id, args.bot_type, args.botmaster_type)
