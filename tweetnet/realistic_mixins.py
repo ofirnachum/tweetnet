@@ -12,7 +12,7 @@ class BaseRealisticMixin(object):
 class DeterministicRealisticMixin(BaseRealisticMixin):
 
     def __init__(self, *args, **kwargs):
-        super(MonotonicRealisticMixin, self).__init__(*args, **kwargs)
+        super(DeterministicRealisticMixin, self).__init__(*args, **kwargs)
         self._realistic_sequence_number = 0
 
     def _get_realistic_tweet(self):

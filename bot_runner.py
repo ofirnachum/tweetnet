@@ -39,7 +39,7 @@ if __name__ == "__main__":
     elif args.run_type == BOT:
         bot = bot_obj(args.bot_id, api, args.username)
     elif args.run_type == MASTER:
-        bot = bot_obj(args.bot_id, api)
+        bot = bot_obj(args.username, api)
 
     if bot is None:
         raise Exception("Invalid type! %s" % args.run_type)

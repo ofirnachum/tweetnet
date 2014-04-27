@@ -17,4 +17,4 @@ class StupidBotMaster(BotMaster):
                     print "tweeting '#wow %s'" % flag
                     self.api.tweet(self.user, "#wow %s" % flag)
 
-        time.sleep(3)
+            time.sleep(3)
