@@ -48,7 +48,7 @@ class BaseTweetnet(object):
         m.update(self.round_id + "||" + content)
         return self._submit_small_flag(m.hexdigest(), submitter_id)
 
-    @restrict_to_roles('admin')
+    @restrict_to_roles('admin', 'master')
     def get_flags(self, since=None):
         """
         Gets flags. Since argument will
@@ -56,7 +56,7 @@ class BaseTweetnet(object):
         """
         return self._get_flags(since)
 
-    @restrict_to_roles('benign', 'admin')
+    @restrict_to_roles('benign', 'admin', 'master')
     def get_realistic_tweet(self):
         """
         Somehow, gets and returns a realistic looking tweet,
@@ -88,6 +88,7 @@ class BaseTweetnet(object):
         """
         return self._add_follower(followed, follower)
 
+    @restrict_to_roles('admin', 'master', 'benign')
     def tweet(self, username, tweet):
         """
         broadcasts the given tweet as the specified user
