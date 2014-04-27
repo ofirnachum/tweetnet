@@ -65,20 +65,35 @@ def main(round_id, bot_type,
 
 
 def get_beign_args(round_id, username):
-    return get_popen_args(*[round_id, username, "benign"])
+    return get_popen_args({
+        '--round-id': round_id,
+        '--username': username,
+        '--run-type': "benign"
+    })
 
 
 def get_bot_args(round_id, i, bot_type, botmaster):
-    return get_popen_args(*[round_id, str(i), bot_type, "bot"])
+    return get_popen_args({
+        '--round-id': round_id,
+        '--bot-id': str(i),
+        '--bot-type': bot_type,
+        '--run-type': "bot"
+    })
 
 
 def get_master_args(round_id, username, bot_type):
-    return get_popen_args(*[round_id, username, bot_type, "master"])
+    return get_popen_args({
+        '--round-id': round_id,
+        '--username': username,
+        '--bot-type': bot_type,
+        '--run-type': "master",
+    })
 
 
-def get_popen_args(*args):
+def get_popen_args(options):
     base_args = [PY_PATH, "python", BOT_RUNNER]
-    base_args.extend(args)
+    for k, v in options.items():
+        base_args += [k, v]
     return base_args
 
 
