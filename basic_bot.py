@@ -22,6 +22,7 @@ if __name__ == "__main__":
 
     # Most recent timestamp of check for flags
     last_check = start_time;
+    last_master = None
     while True:
         # Get count for each user of how
         # many tweets are within 'sweetspot'.
@@ -35,10 +36,17 @@ if __name__ == "__main__":
                 users[tweet['username']] = 0;
             if utils.sweet_spot(tweet['timestamp']):
                 users[tweet['username']] += 1;
+            else:
+                users[tweet['username']] -= 1
+
         if (len(users)): 
             # Predicted master is one with most 
             # 'sweetspot' tweets
             master = max(users.iteritems(), key=operator.itemgetter(1))[0];
+            if master != last_master:
+                last_check = start_time
+                flag_components = []
+            last_master = master
             # Is number of 'sweetspot' tweets 
             # significant?  Don't want a false 
             # positive.
@@ -55,6 +63,7 @@ if __name__ == "__main__":
                             # Flag component found in 2nd to last char (punctuation)
                             component = utils.from_punctuation(content[-2]);
                             flag_components.append((tweet['timestamp'], component));
+                            print "got flag component! %d, %s" % (component, ''.join([str(f[1]) for f in flag_components]))
                     if (tweet['timestamp'] > new_last_check):
                         new_last_check = tweet['timestamp'];
                 # Update last check time
@@ -92,4 +101,4 @@ if __name__ == "__main__":
                 r = api.submit_small_flag(flag, bot_id);
                 print r, flag;
                 submitted.add(flag);
-        time.sleep(10)
+        time.sleep(1)

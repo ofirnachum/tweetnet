@@ -6,9 +6,6 @@ import botnet_utils as utils
 
 from tweetnet import Tweetnet
 
-TWEET_PERIOD = 1;
-SLEEP_PERIOD = 1;
-
 class TweetQueue:
     # NOTE: Tweet frequency is relative
     # to how often you call 'pop'.
@@ -36,7 +33,7 @@ def get_random_tweet(api):
     """
     returns random tweet from all tweets
     """
-    tweet = "hello hello";#api.get_realistic_tweet();
+    tweet = api.get_realistic_tweet();
     return tweet;
 
 def get_random_short_tweet(api, max_len):
@@ -70,7 +67,7 @@ if __name__ == "__main__":
     user = sys.argv[2]
 
     api = Tweetnet(round_id, role='admin')
-    queue = TweetQueue(user, api, TWEET_PERIOD);
+    queue = TweetQueue(user, api, 2);
 
     # Last check for flags
     last_check = 0
@@ -90,5 +87,6 @@ if __name__ == "__main__":
         if flags:
             for flag in flags:
                 tweet_flag(api, queue, flag);
+        time.sleep(1)
         queue.pop();
-        time.sleep(SLEEP_PERIOD)
+        time.sleep(1)
