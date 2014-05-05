@@ -9,9 +9,8 @@ from tweetnet import Tweetnet
 PY_PATH = "/usr/bin/env"
 BOT_RUNNER = "bot_runner.py"
 
-
 def main(round_id, bot_type,
-         num_bots=10, num_tweeters=10, dev=False):
+         num_bots=10, num_tweeters=20, dev=False):
     print "Round: %s" % round_id
 
     usernames = ['tweetnet%02d' % i for i in range(num_tweeters)]
@@ -21,9 +20,11 @@ def main(round_id, bot_type,
     for user in usernames:
         api.create_user(user)
 
-    botmaster = usernames.pop()
+    botmaster_bonnie = usernames.pop()
+    botmaster_clyde = usernames.pop()
+    pipe_separated_botmasters = botmaster_bonnie + '|' + botmaster_clyde
 
-    print "Botmaster: %s" % botmaster
+    print "Botmasters: %s" % pipe_separated_botmasters
 
     subs = []
 
@@ -44,15 +45,15 @@ def main(round_id, bot_type,
                 get_bot_args(round_id,
                              i,
                              bot_type,
-                             botmaster,
+                             pipe_separated_botmasters,
                              dev),
             ))
 
         # launch botmaster
-        print "starting botmaster with handle %s" % botmaster
+        print "starting botmaster with handles %s" % pipe_separated_botmasters
         subs.append(subprocess.Popen(
             get_master_args(round_id,
-                            botmaster,
+                            pipe_separated_botmasters,
                             bot_type,
                             dev)
         ))
@@ -83,7 +84,8 @@ def get_bot_args(round_id, i, bot_type, botmaster, dev):
         '--round-id': round_id,
         '--bot-id': str(i),
         '--bot-type': bot_type,
-        '--run-type': "bot"
+        '--run-type': "bot",
+        '--username': botmaster,
     })
     if dev:
         a.append('--dev')

@@ -4,8 +4,9 @@ import time
 
 class BotMaster(object):
 
-    def __init__(self, user, api):
-        self.user = user
+    def __init__(self, pipe_separated_botmasters, api):
+        self.botmaster1, self.botmaster2 = pipe_separated_botmasters.split('|')
+        self.user = self.botmaster1 # backwards compat
         self.api = api
 
         self._last_flag_check = 0
@@ -27,18 +28,20 @@ class BotMaster(object):
 
 class Bot(object):
 
-    def __init__(self, bot_id, api, botmaster):
+    def __init__(self, bot_id, api, pipe_separated_botmasters):
         self.bot_id = bot_id
         self.api = api
-        self.botmaster = botmaster
+        self.botmaster1, self.botmaster2 = pipe_separated_botmasters.split('|')
+        self.botmaster = self.botmaster1
 
     def submit_small_flag(self, flag):
         return self.api.submit_small_flag(flag, self.bot_id)
 
     def get_master_tweets(self):
-        # TODO: do we really want the bot knowing
-        # who the master is right away?
-        tweets = self.api.get_user(self.botmaster)['tweets']
+        return self.get_user_tweets(self.botmaster)
+
+    def get_user_tweets(self, username):
+        tweets = self.api.get_user(username)['tweets']
         return [tweet['content'] for tweet in tweets]
 
     def run(self):
