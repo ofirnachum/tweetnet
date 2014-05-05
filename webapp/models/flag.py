@@ -7,7 +7,7 @@ class Flag(object):
         obj = json.loads(json_string)
         return cls(db, **obj)
 
-    def __init__(self, db, flag_id, size, contents, created_at):
+    def __init__(self, db, flag_id, size, contents, created_at, **kwargs):
         self.db = db
         self.flag_id = flag_id
         self.size = size
@@ -16,6 +16,10 @@ class Flag(object):
 
     @property
     def submissions(self):
+        return [i[0] for i in self.db.get_submissions_for_flag(self.flag_id)]
+
+    @property
+    def submissions_with_times(self):
         return self.db.get_submissions_for_flag(self.flag_id)
 
     def add_submission(self, submitter_id):
@@ -30,6 +34,8 @@ class Flag(object):
             'size':self.size,
             'contents':self.contents,
             'created_at':self.created_at,
+            'submissions':self.submissions,
+            'submissions_with_times':self.submissions_with_times,
         }
 
     def to_json(self):

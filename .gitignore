@@ -11,3 +11,4 @@ env
 
 # python jank
 *.pyc
+*.rdb

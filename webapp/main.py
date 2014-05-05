@@ -3,6 +3,7 @@ import os.path
 import json
 import tweepy
 import flask
+import random
 app = flask.Flask(__name__)
 app.debug = True
 
@@ -16,6 +17,7 @@ import stream_consumer
 
 TWEETNET_DEV_DB = 7
 
+
 def db():
     if os.environ.get('REDISTOGO_URL'):
         return Database(url=os.environ['REDISTOGO_URL'])
@@ -23,15 +25,18 @@ def db():
         # Assume local
         return Database(host='localhost', port=6379, db=TWEETNET_DEV_DB)
 
+
 @app.route("/")
 def index():
     return "Hi"
+
 
 @app.route("/round/<round_id>")
 def round_index(round_id):
     d = db()
     round = d.get_round(round_id)
     return flask.render_template('round.html', round=round, twitter=round.twitter)
+
 
 @app.route("/round/<round_id>/flags", methods=('GET', 'POST'))
 def round_flags(round_id):
@@ -50,8 +55,10 @@ def round_flags(round_id):
             'flags': [flag.as_dict() for flag in flags],
         })
     else:
-        round.add_flag(flask.request.form['size'], flask.request.form['contents'])
+        round.add_flag(
+            flask.request.form['size'], flask.request.form['contents'])
         return flask.redirect(round.url())
+
 
 @app.route("/flags/<flag_id>", methods=('GET', 'POST'))
 def flag_detail(flag_id):
@@ -63,7 +70,7 @@ def flag_detail(flag_id):
     if flask.request.method == "GET":
         flag = d.get_flag(flag_id)
         if flag:
-            return repr(flag)
+            return flask.jsonify(flag.as_dict())
         else:
             flask.abort(404)
     else:
@@ -77,9 +84,11 @@ def flag_detail(flag_id):
             # TODO: worry about malformed? nahhh...
             submitter_id = int(flask.request.form['submitter_id'])
             flag.add_submission(submitter_id)
-            return flask.jsonify({'ok':True}),  201
+            return flask.jsonify({'ok': True}),  201
 
-## Twitter endpoints
+# Twitter endpoints
+
+
 @app.route("/round/<round_id>/twitter/users", methods=('GET', 'POST'))
 def user_list(round_id):
     # Returns all usernames, or creates a user (for post)
@@ -92,12 +101,13 @@ def user_list(round_id):
             'count': len(usernames),
             'usernames': usernames,
         })
-    else: # POST
+    else:  # POST
         user = twitter.create_user(flask.request.form['username'])
         if flask.request.args.get('redirect_to'):
             return flask.redirect(flask.request.args['redirect_to'])
         else:
             return flask.jsonify(user.as_dict())
+
 
 @app.route("/round/<round_id>/twitter/users/<username>")
 def user_detail(round_id, username):
@@ -109,6 +119,7 @@ def user_detail(round_id, username):
         flask.abort(404)
     else:
         return flask.jsonify(u.as_dict())
+
 
 @app.route("/round/<round_id>/twitter/users/<username>/followers", methods=('POST',))
 def add_follower(round_id, username):
@@ -133,6 +144,7 @@ def add_follower(round_id, username):
     else:
         return flask.jsonify(u.as_dict())
 
+
 @app.route("/round/<round_id>/twitter/tweets", methods=('GET', 'POST'))
 def tweet_list(round_id):
     # API get tweets or create
@@ -147,7 +159,7 @@ def tweet_list(round_id):
             'count': len(tweets),
             'tweets': [t.as_dict() for t in tweets],
         })
-    else: # POST
+    else:  # POST
         tweeter = flask.request.form['username']
         if twitter.get_user(tweeter) is None:
             flask.abort(404, "User %s not found" % tweeter)
@@ -157,13 +169,15 @@ def tweet_list(round_id):
         else:
             return flask.jsonify(tweet.as_dict())
 
+
 @app.route("/sample")
 def sample_tweet():
     d = db()
 
     # Get text from a tweet from real twitter
     api_key = 'bpzbu8YIoh7lZ4jUBTX1PsIdv'
-    api_secret = 'Mb407I4DPvvwejzMun8t3X9u19e52bFiDpdM7aUUbhWDpTj77N'  # Horrible exposed secrets
+    # Horrible exposed secrets
+    api_secret = 'Mb407I4DPvvwejzMun8t3X9u19e52bFiDpdM7aUUbhWDpTj77N'
 
     access_token = '2444646246-HejodGZWNtrB8kRFH36VDUWdEmvwQSewpEjqFeE'
     access_token_secret = 'f0JKkRjEUoDdOpZB3g0rEs2SOlUy4A2uLLcRMcVYeXw1V'

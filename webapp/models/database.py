@@ -1,6 +1,8 @@
 """
 source of models
 """
+import time
+
 import redis
 from . import Round
 from . import Flag
@@ -34,11 +36,13 @@ class Database(object):
             return None
 
     def get_submissions_for_flag(self, flag_id):
-        return self.r.smembers("flags:%s:submissions" % flag_id)
+        submitter_ids = self.r.smembers("flags:%s:submissions" % flag_id)
+        hash_key = "flags:%s:submission_times" % flag_id
+        return [(s, self.r.hget(hash_key, s)) for s in submitter_ids]
 
     def add_submission_for_flag(self, flag_id, submitter_id):
+        self.r.hset("flags:%s:submission_times" % flag_id, submitter_id, int(time.time()))
         self.r.sadd("flags:%s:submissions" % flag_id, submitter_id)
-
 
     def get_usernames_for_round(self, round_id):
         return self.r.smembers("round:%s:twitter:usernames" % round_id)

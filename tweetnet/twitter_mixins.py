@@ -75,12 +75,6 @@ class MockTwitterMixin(BaseTwitterMixin):
         r.raise_for_status()
         return r.json()['tweets']
 
-    def _get_realistic_tweet(self):
-        url = self.API_ROOT + '/sample'
-        r = requests.get(url)
-        r.raise_for_status()
-        return r.json()['text']
-
     def _query_tweets(self, query):
         return [tweet for tweet in self.get_tweets() if query in tweet['content']]
 

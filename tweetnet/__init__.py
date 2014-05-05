@@ -8,6 +8,18 @@ from realistic_mixins import *
 from flags_mixins import *
 
 
-class Tweetnet(MockTwitterMixin, ConstantRealisticMixin, WebappFlagsMixin, BaseTweetnet):
+class Tweetnet(MockTwitterMixin, WebappRealisticMixin, WebappFlagsMixin, BaseTweetnet):
     pass
 
+
+class DevTweetnet(MockTwitterMixin, DeterministicRealisticMixin, WebappFlagsMixin, BaseTweetnet):
+    pass
+
+
+TYPES = {
+    'default': Tweetnet,
+    'dev': DevTweetnet,
+}
+
+def get_api_type(flag):
+    return TYPES[flag]
