@@ -16,8 +16,8 @@ class BenignTweeter(object):
 
     def should_i_tweet(self):
         # TODO: some real kind of rando
-        # for the distribution we want
-        return random.random() < .05
+        # for the distribution we want...
+        return random.random() < .5
 
     def run(self):
         try:
