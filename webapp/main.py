@@ -70,7 +70,7 @@ def flag_detail(flag_id):
     if flask.request.method == "GET":
         flag = d.get_flag(flag_id)
         if flag:
-            return repr(flag)
+            return flask.jsonify(flag.as_dict())
         else:
             flask.abort(404)
     else:
