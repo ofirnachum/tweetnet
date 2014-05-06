@@ -10,18 +10,12 @@ class HashBot(Bot):
         self.already_submitted = set()
 
     def run(self):
+        last_check = 0
         while True:
-            self.check_for_wows()
+            bm1_tweets = self.api.get_user(self.botmaster1)['tweets']
+            for tweet in bm1_tweets:
+                if tweet['timestamp'] > last_check:
+                    print hex(hash(tweet['content']) % 16)
+            last_check = int(time.time())
             time.sleep(1)
 
-    def check_for_wows(self):
-        wows = self.api.query_tweets('#wow')
-        for tweet in wows:
-            self.submit_wow_tweet(tweet)
-
-    def submit_wow_tweet(self, tweet):
-        _, flag = tweet['content'].split(' ')
-        if not flag in self.already_submitted:
-            r = self.api.submit_small_flag(flag, self.bot_id)
-            print r, flag
-            self.already_submitted.add(flag)
