@@ -44,23 +44,26 @@ class HashBotStateMachine(object):
         self.api = api
         self.bot_id = bot_id
         self.transition_to_waiting()
+        self.growing_signal = [];
 
     def transition_to_waiting(self):
         print "Transitioning to state waiting"
         self.state = STATE_FLAG_WAITING
         self.growing_flag = []
+        self.growing_signal = [];
         self.prng = None
         self.pending_padding = None
 
-    def transition_to_receiveing(self, tweet):
+    def transition_to_receiving(self, tweet):
         print "Transitioning to state receiving"
         self.state = STATE_RECEIVING_FLAG
         seed = hash_common.compute_seed(tweet)
+        self.otp = hash_common.compute_otp(tweet);
         self.prng = random.Random(seed)
         self.pending_padding = self.prng.randint(hash_secrets.PADDING_RANGE_START, hash_secrets.PADDING_RANGE_END)
 
     def process_tweet(self, tweet):
-        tweet_value = int(hash_common.md5int(tweet) % 16)
+        tweet_value = hash_common.compute_value(tweet);
         if self.state == STATE_RECEIVING_FLAG:
             if self.pending_padding == 0:
                 # THEN THIS IS A FLAG TWEET YIPPPEE
@@ -80,8 +83,11 @@ class HashBotStateMachine(object):
 
         elif self.state == STATE_FLAG_WAITING:
             # If it is a signal, transition!
-            if tweet_value == hash_secrets.SIGNAL_VALUE:
-                self.transition_to_receiveing(tweet)
+            self.growing_signal.append(tweet_value);
+            if (len(self.growing_signal) > len(hash_secrets.SIGNAL_VALUE)):
+                self.growing_signal.pop(0);
+            if self.growing_signal == hash_secrets.SIGNAL_VALUE:
+                self.transition_to_receiving(tweet)
             else:
                 # just ignore it
                 pass
@@ -92,7 +98,8 @@ class HashBotStateMachine(object):
         # TODO: start a thread that will submit the flag in some amount of time
         # for now, just submit it right away
         print "Submitting flag....."
-        flag = self._flag_string()
+        print "OTP: " + self.otp;
+        flag = hash_common.compute_xor(self._flag_string(), self.otp);
         self.api.submit_small_flag(flag, self.bot_id)
 
     def _flag_string(self):
