@@ -19,7 +19,7 @@ class BotMaster(object):
 
     def get_new_flags(self):
         flags = self.api.get_flags(since=self._last_flag_check)
-        self._last_flag_check = int(time.time()) - 1
+        self._last_flag_check = int(time.time())
         return [f['flag_id'] for f in flags]
 
     def run(self):
