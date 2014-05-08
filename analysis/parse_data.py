@@ -1,6 +1,6 @@
 import json
 
-file = open('tweets.json', 'r');
+file = open('r2/tweets.json', 'r');
 json_string = "";
 for line in file:
     json_string += line;
@@ -15,14 +15,42 @@ for tweet in unparsed_tweets:
     if user not in users_tweets:
         users_tweets[user] = [];
     users_tweets[user].append((timestamp, content));
+print "START AND END TIMES";
 # Sort tweets by timestamp
 for user, tweets in users_tweets.iteritems():
     users_tweets[user].sort();
+    print user, ": ", users_tweets[user][0][0], users_tweets[user][-1][0];
 
 # Print tweet count
 print "TWEET COUNT";
 for user, tweets in users_tweets.iteritems():
     print user, ": ", len(tweets);
+
+# Print hash count
+print "HASH COUNT";
+for user, tweets in users_tweets.iteritems():
+    counts = [0]*16;
+    for (time, content) in tweets:
+        if (time <= 1399531568) or (time >= 1399531890):
+            counts[hash(content) % 16] += 1;
+    print user, ": ", max(counts), min(counts), counts;
+
+tol = 15;
+for user, tweets in users_tweets.iteritems():
+    for i in xrange(len(tweets) - 33):
+        #if (hash(tweets[i][1]) % 16 == hash(tweets[i+33][1]) % 16):
+        if (1399531568+tol >= tweets[i][0] >= 1399531568 and 1399531719-tol <= tweets[i+32][0] <= 1399531719):
+            #print user, i, tweets[i][0] % 1000, tweets[i+32][0] % 1000, hash(tweets[i][1]) % 16
+            if (i + 33 + 32 >= len(tweets)):
+                continue;
+            if (1399531890-tol <= tweets[i + 33 + 32][0] <= 1399531890):
+                print "target acquired: ", user, tweets[i][0] % 1000, tweets[i+32][0] % 1000, tweets[i + 33 + 32][0] % 1000;
+                for (time, content) in tweets:
+                    if (time < tweets[i][0]):
+                        if (hash(content) % 16 == hash(tweets[i][1]) % 16):
+                            print "whoops, false alarm";
+
+asdfasdf
 
 # Print average word per tweet
 print "WORD AVERAGE";
@@ -60,13 +88,13 @@ for user, tweets in users_tweets.iteritems():
 
 # Print num tweets in each window
 print "TIME WINDOWS:"
-time_window = 10;
+time_window = 40;
 for user, tweets in users_tweets.iteritems():
     windows = {};
     for tweet in tweets:
-        if (tweet[0] // 60 not in windows):
-            windows[tweet[0] // 60] = 0;
-        windows[tweet[0] // 60] += 1;
+        if (tweet[0] // time_window not in windows):
+            windows[tweet[0] // time_window] = 0;
+        windows[tweet[0] // time_window] += 1;
     windows_list = sorted(windows.items());
     print user, " ", windows_list;
 
